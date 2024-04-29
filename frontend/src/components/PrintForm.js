@@ -1,6 +1,6 @@
 import { Button, Col, Form, Input, Row, Select, message } from "antd";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const { Option } = Select;
 
@@ -42,6 +42,14 @@ const PrintForm = () => {
 
   // 设置正则表达式默认值
   const defaultRegex = /IMEI:(\d{15}),MAC:([A-Fa-f0-9]{12})/;
+
+  // 从本地存储中加载数据并填充表单
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("formData"));
+    if (storedData) {
+      form.setFieldsValue(storedData);
+    }
+  }, [form]);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -99,8 +107,14 @@ const PrintForm = () => {
         dataMatches: groups,
         url: finalUrl,
         textString: textString, // 使用匹配到的组数据
-        fontDots:fontDots //用于计算字符数所占点数dots
+        fontDots: fontDots //用于计算字符数所占点数dots
       });
+
+      // 将数据存储到本地存储中，如果数据发生变化
+      if (JSON.stringify(values) !== JSON.stringify(JSON.parse(localStorage.getItem("formData")))) {
+        localStorage.setItem("formData", JSON.stringify(values));
+      }
+
       // 打印请求成功的消息
       message.success("打印请求成功发送");
       // 清空 data 字段的值
@@ -142,7 +156,7 @@ const PrintForm = () => {
           multipliCationX: 1,
           multipliCationY: 1,
           textString: "{group0}",
-          fontDots:0
+          fontDots: "0"
         }}
       >
         <Row gutter={16}>

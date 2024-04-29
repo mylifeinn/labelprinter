@@ -53,7 +53,7 @@ public class PrintController {
     System.out.println("请求对象:"+content);
     // 创建USB连接客户端
     TSPLConnectionClient tsplConnectionClient = new USBConnectionClient(Short.parseShort(content.getVenderId(),16),Short.parseShort((content.getProductId()),16) );
-    System.out.println("打印机对象:"+tsplConnectionClient);
+    // System.out.println("打印机对象:"+tsplConnectionClient);
 
     // 初始化打印机
     tsplConnectionClient.init();
