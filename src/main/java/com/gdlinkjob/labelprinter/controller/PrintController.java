@@ -102,7 +102,7 @@ public class PrintController {
       System.out.println("发送的指令:"+tsplLabel.getElements());
 
       // 发送打印指令
-      tsplConnectionClient.send(tsplLabel);
+      // tsplConnectionClient.send(tsplLabel);
     } finally {
       // 断开连接
       tsplConnectionClient.disconnect();
