@@ -1,6 +1,6 @@
 import { Button, Col, Form, Input, Row, Select, message } from "antd";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const { Option } = Select;
 
@@ -8,7 +8,7 @@ const PrintForm = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [regex, setRegex] = useState("");
-  const [fontDots, setFontDots] = useState("");
+  const dataRef=useRef()
 
   //字体选择
   const fontOptions = {
@@ -34,12 +34,6 @@ const PrintForm = () => {
     "8": "14",
   };
 
-  // 处理字体选择变化
-  const handleFontChange = (value) => {
-    console.log("Selected text type:",value)
-    setFontDots(fontDotsOptions[value]);
-  };
-
   // 设置正则表达式默认值
   const defaultRegex = /IMEI:(\d{15}),MAC:([A-Fa-f0-9]{12})/;
 
@@ -48,7 +42,11 @@ const PrintForm = () => {
     const storedData = JSON.parse(localStorage.getItem("formData"));
     if (storedData) {
       form.setFieldsValue(storedData);
+      form.setFieldValue("data",null)
     }
+    setTimeout(() => {
+      dataRef.current?.focus();
+    }, 500);
   }, [form]);
 
   const onFinish = async (values) => {
@@ -107,7 +105,7 @@ const PrintForm = () => {
         dataMatches: groups,
         url: finalUrl,
         textString: textString, // 使用匹配到的组数据
-        fontDots: fontDots //用于计算字符数所占点数dots
+        fontDots: fontDotsOptions[form.getFieldValue("textStringType")] //用于计算字符数所占点数dots
       });
 
       // 将数据存储到本地存储中，如果数据发生变化
@@ -311,7 +309,7 @@ const PrintForm = () => {
               name="textStringType"
               rules={[{ required: true, message: "请选择字体" }]}
             >
-              <Select onChange={handleFontChange}>
+              <Select>
                 {Object.keys(fontOptions).map((key) => (
                   <Option key={key} value={fontOptions[key]}>
                     {key}
@@ -381,7 +379,7 @@ const PrintForm = () => {
               name="data"
               rules={[{ required: true, message: "请输入待匹配的数据" }]}
             >
-              <Input />
+              <Input ref={dataRef} />
             </Form.Item>
 
             {/* URL 地址 */}
