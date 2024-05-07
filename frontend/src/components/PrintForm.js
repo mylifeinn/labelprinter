@@ -8,7 +8,7 @@ const PrintForm = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [regex, setRegex] = useState("");
-  const dataRef=useRef()
+  const dataRef = useRef();
 
   //字体选择
   const fontOptions = {
@@ -24,14 +24,14 @@ const PrintForm = () => {
 
   // fontDots 值字典
   const fontDotsOptions = {
-    "1": "8",
-    "2": "12",
-    "3": "16",
-    "4": "24",
-    "5": "32",
-    "6": "14",
-    "7": "21",
-    "8": "14",
+    1: "8",
+    2: "12",
+    3: "16",
+    4: "24",
+    5: "32",
+    6: "14",
+    7: "21",
+    8: "14",
   };
 
   // 设置正则表达式默认值
@@ -42,7 +42,7 @@ const PrintForm = () => {
     const storedData = JSON.parse(localStorage.getItem("formData"));
     if (storedData) {
       form.setFieldsValue(storedData);
-      form.setFieldValue("data",null)
+      form.setFieldValue("data", null);
     }
     setTimeout(() => {
       dataRef.current?.focus();
@@ -99,17 +99,20 @@ const PrintForm = () => {
       console.log("Text to print:", textString);
 
       // 发送 HTTP 请求到后端接口
-      await axios.post("http://localhost:8080/api/print", {
+      await axios.post("/api/print", {
         ...values,
         data: data,
         dataMatches: groups,
         url: finalUrl,
         textString: textString, // 使用匹配到的组数据
-        fontDots: fontDotsOptions[form.getFieldValue("textStringType")] //用于计算字符数所占点数dots
+        fontDots: fontDotsOptions[form.getFieldValue("textStringType")], //用于计算字符数所占点数dots
       });
 
       // 将数据存储到本地存储中，如果数据发生变化
-      if (JSON.stringify(values) !== JSON.stringify(JSON.parse(localStorage.getItem("formData")))) {
+      if (
+        JSON.stringify(values) !==
+        JSON.stringify(JSON.parse(localStorage.getItem("formData")))
+      ) {
         localStorage.setItem("formData", JSON.stringify(values));
       }
 
@@ -154,7 +157,7 @@ const PrintForm = () => {
           multipliCationX: 1,
           multipliCationY: 1,
           textString: "{group0}",
-          fontDots: "0"
+          fontDots: "0",
         }}
       >
         <Row gutter={16}>
@@ -164,7 +167,10 @@ const PrintForm = () => {
               name="venderId"
               rules={[
                 { required: true, message: "请输入打印机制造商ID" },
-                { pattern: /^[0-9a-fA-F]+$/, message: "请输入有效的打印机制造商ID" },
+                {
+                  pattern: /^[0-9a-fA-F]+$/,
+                  message: "请输入有效的打印机制造商ID",
+                },
               ]}
             >
               <Input maxLength={4} />
@@ -175,7 +181,10 @@ const PrintForm = () => {
               name="productId"
               rules={[
                 { required: true, message: "请输入打印机产品ID" },
-                { pattern: /^[0-9a-fA-F]+$/, message: "请输入有效的打印机产品ID" },
+                {
+                  pattern: /^[0-9a-fA-F]+$/,
+                  message: "请输入有效的打印机产品ID",
+                },
               ]}
             >
               <Input maxLength={4} />
